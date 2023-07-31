@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="container">
+    <h3>İşlem Butonları</h3>
+    <button type="button" id="btnCustomerList" class="btn btn-primary">Müşteri Listesi</button>
+    <button type="button" id="btnCustomerAdd" class="btn btn-success">Müşteri Ekle</button>
+    <button type="button" id="btnCustomerDelete" class="btn btn-danger">Müşteri Sİl</button>
+    <button type="button" id="btnCustomerUpdate" class="btn btn-warning">Müşteri Güncelle</button>
+    <button type="button" id="btnCustomerGet" class="btn btn-info">Müşteri Getir</button>
+    <br />
+    <hr />
+    <div class="customerList">
+    </div>
+</div>
+
+
+
+
+
+<script>
+    $("#btncustomerlist").click(function () {
+        $.ajax({
+            contentType: "application/json",
+            dataType: "json",
+            type: "Get",
+            url: "/Default/CustomerList/",
+            success: function (funk1) {
+                let values = jQuery.parseJSON(funk1);
+                console.log(values);
+                let tablehtml = `<table class=table table-bordered>
+                        <tr>
+                        <th>Müşteri ID</th>
+                        <th>Müşteri Adı</th>
+                        <th>Müşteri Soyadı</th>
+                        <th>Şehir</th>
+                        </tr>`
+                $.each(values, (index, value) => {
+                    tablehtml += `<tr>
+                            <td>${value.CustomerId}</td>
+                            <td>${value.Name}</td>
+                            <td>${value.Surname}</td>
+                            <td>${value.City}</td>
+                            </tr>`
+                });
+                tablehtml += "</table>";
+                $("#customerList").html(tablehtml);
+            }
+        });
+    });
+</script>

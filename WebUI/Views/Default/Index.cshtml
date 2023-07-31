@@ -1,0 +1,142 @@
+﻿
+@{
+    Layout = null;
+}
+
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<div class="container">
+    <br />
+    <br />
+    <h3>İşlem Butonları</h3>
+    <hr />
+    <buton type="button" id="btncustomerlist" class="btn btn-outline-primary">Müşteri Listesi</buton>
+    <buton type="button" id="btncustomeradd" class="btn btn-outline-success">Müşteri Ekle</buton>
+    <buton type="button" id="btncustomerdelete" class="btn btn-outline-danger">Müşteri Sil</buton>
+    <buton type="button" id="btncustomeredit" class="btn btn-outline-warning">Müşteri Güncelle</buton>
+    <buton type="button" id="btncustomerget" class="btn btn-outline-info">Müşteri Getir</buton>
+    <br />
+    <hr />
+
+    <div>
+        <h3>Müşteri Ekleme</h3>
+        <input type="text" class="form-control" id="txtCustomerName" placeholder="Müşteri Adı" /><br />
+        <input type="text" class="form-control" id="txtCustomerSurname" placeholder="Müşteri Soyadı" /><br />
+        <input type="text" class="form-control" id="txtCustomerCity" placeholder="Müşteri Şehir" /><br />
+    </div>
+    <div>
+        <h3>Müşteri Silme</h3>
+        <input type="text" class="form-control" id="txtdeletedid" placeholder="Silinecek id" />
+        <br /><hr />
+    </div>
+    <div>
+        <h3>Idye Göre Müşteri Getirme</h3>
+        <input type="text" class="form-control" id="txtgetcustomerid" placeholder="getirilecek id" />
+        <br /><hr />
+    </div>
+
+    <h3>Müşteri Listesi</h3>
+    <div id="customerlist">
+    </div>
+    <h3>Müşteri </h3>
+    <div id="customergetbyid">
+    </div>
+</div>
+
+<script>
+    $("#btncustomerlist").click(function () {
+        $.ajax({
+            contentType: "application/json",
+            dataType: "json",
+            type: "Get",
+            url: "/Default/CustomerList/",
+            success: function (funk1) {
+                let values = jQuery.parseJSON(funk1);
+                console.log(values);
+                let tablehtml = `<table class=table table-bordered>
+                        <tr>
+                        <th>Müşteri Id</th>
+                        <th>Müşteri Adı</th>
+                        <th>Müşteri Soyadı</th>
+                        <th>Şehir</th>
+                        </tr>`
+                $.each(values, (index, value) => {
+                    tablehtml += `<tr>
+                            <td>${value.CustomerId}</td>
+                            <td>${value.Name}</td>
+                            <td>${value.Surname}</td>
+                            <td>${value.City}</td>
+                            </tr>`
+                });
+                tablehtml += "</table>";
+                $("#customerlist").html(tablehtml);
+            }
+        });
+    });
+
+    $("#btncustomeradd").click(function () {
+        let customervalues = {
+            Name: $("#txtCustomerName").val(),
+            Surname: $("#txtCustomerSurname").val(),
+            City: $("#txtCustomerCity").val()
+        };
+
+        $.ajax({
+            type: "post",
+            url: "/Default/CustomerAdd/",
+            data: customervalues,
+            success: function (funk2) {
+                let result = jQuery.parseJSON(funk2);
+                swal("Müşteri eklendi","İyi Çalışmalar","success");
+            }
+        });
+    });
+
+    $("#btncustomerdelete").click(function(){
+        let id = $("#txtdeletedid").val();
+        $.ajax({
+            url: "/Default/DeleteCustomer/" + id,
+            type:"Get",
+            contentType:"application/json",
+            success:function(funk3){
+                swal("Müşteri silindi");
+            }
+        });
+    });
+
+    $("#btncustomerget").click(function(){
+        let id = $("#txtgetcustomerid").val();
+
+        $.ajax({
+            contentType:"application/json",
+            dataType:"json",
+            type:"Get",
+            url:"/Default/GetCustomer/"+id,
+            data:{CustomerId:id},
+            success:function(funk4){
+                let result = jQuery.parseJSON(funk4);
+                console.log(result);
+                let htmlstr = `<table class=table table-bordered>
+                            <tr>
+                            <th>Müşteri Id</th>
+                            <th>Müşteri Adı</th>
+                            <th>Müşteri Soyadı</th>
+                            <th>Şehir</th>
+                            </tr>
+                            <tr>
+                                    <td>${result.CustomerId}</td>
+                                    <td>${result.Name}</td>
+                                    <td>${result.Surname}</td>
+                                    <td>${result.City}</td>
+                                </tr>`
+                            "</table>";
+                $("#customergetbyid").html(htmlstr);
+            }
+        });
+    });
+</script>
