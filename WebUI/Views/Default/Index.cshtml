@@ -30,6 +30,14 @@
         <input type="text" class="form-control" id="txtCustomerCity" placeholder="Müşteri Şehir" /><br />
     </div>
     <div>
+        <h3>Müşteri Güncelleme</h3>
+        <input type="text" class="form-control" id="txtEditId" placeholder="Müşteri Id" /><br />
+        <input type="text" class="form-control" id="txtEditName" placeholder="Müşteri Adı" /><br />
+        <input type="text" class="form-control" id="txtEditSurname" placeholder="Müşteri Soyadı" /><br />
+        <input type="text" class="form-control" id="txtEditCity" placeholder="Müşteri Şehir" /><br />
+        <hr />
+    </div>
+    <div>
         <h3>Müşteri Silme</h3>
         <input type="text" class="form-control" id="txtdeletedid" placeholder="Silinecek id" />
         <br /><hr />
@@ -136,6 +144,24 @@
                                 </tr>`
                             "</table>";
                 $("#customergetbyid").html(htmlstr);
+            }
+        });
+    });
+
+    $("#btncustomeredit").click(function(){
+        let customervalues={
+            CustomerId: $("#txtEditId").val(),
+            Name: $("#txtEditName").val(),
+            Surname: $("#txtEditSurname").val(),
+            City: $("#txtEditCity").val()
+        };
+
+        $.ajax({
+            type:"post",
+            url: "/Default/UpdateCustomer/",
+            data:customervalues,
+            success:function(funk5){
+                swal("Müşteri Güncellendi","İyi Çalışmalar","success");
             }
         });
     });
